@@ -44,12 +44,15 @@ def printBoard(board, WIN):
         for j, tile in enumerate(row):
             drawnTile = pygame.Rect((tileWidth * i) + borderWidth, (tileWidth * j) + borderWidth,  drawnWidth, drawnWidth)
             color = (200, 200, 200)
+            textColor = (0, 0, 0)
             if tile.status == "TARGET":
                 color = (0, 120, 0)
+                textColor = (255, 255, 255)
             elif tile.status == "AVOID":
                 color = (120, 0, 0)
+                textColor = (255, 255, 255)
             font = pygame.font.Font(pygame.font.get_default_font(), int(tileWidth / 4))
-            text = font.render(str(tile.weight), True, (0,0,0))
+            text = font.render(str(tile.weight), True, textColor)
             text_rect = text.get_rect(center=((tileWidth * i) + tileWidth / 2, tileWidth * j + tileWidth / 2))
 
             pygame.draw.rect(WIN, color, drawnTile)
