@@ -1,8 +1,9 @@
 import pygame
 from boardData import *
+from findpath import *
 
 
-BOARDWIDTH, BOARDHEIGHT = 20, 10
+BOARDWIDTH, BOARDHEIGHT = 20, 20
 SCREENWIDTH, SCREENHEIGHT = 800, ((800 / BOARDWIDTH) * BOARDHEIGHT) + 100
 DEFAULTWEIGHT = 5
 pygame.init()
@@ -18,6 +19,7 @@ def main():
     board = makeBoard()
     printBoard(board, WIN)
     startPos = open("input/start.txt", "r").read().split(",")
+    findPath(board, 0, 0)
     printKillDozer(int(startPos[0]), int(startPos[1]))
     while run:
         clock.tick(60)
