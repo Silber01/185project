@@ -1,13 +1,14 @@
 class Board:
-    def __init__(self, width, height, defaultWeight, targetsDir, avoidsDir):
+    def __init__(self, height, width, defaultWeight, targetsDir, avoidsDir):
         self.width = width
         self.height = height
         self.matrix = []
         for row in range(height):
             tileRow = []
-            for tile in range(width):
-                tileRow.append(Tile(defaultWeight, "DEFAULT"))
+            for col in range(width):
+                tileRow.append(Tile(col, row, defaultWeight, "DEFAULT"))
             self.matrix.append(tileRow)
+
         def setTargets(targets, status):
             for t in targets:
                 tData = t.split(",")
@@ -25,22 +26,33 @@ class Board:
                     print(f"{tData} is out of range!")
                     continue
                 if status == "TARGET":
-                    self.matrix[x][y].setScore(weight)
+                    self.matrix[y][x].setScore(weight)
                 elif status == "AVOID":
-                    self.matrix[x][y].setWeight(weight)
-                self.matrix[int(tData[0])][int(tData[1])].setStatus(status)
+                    self.matrix[y][x].setWeight(weight)
+                self.matrix[y][x].setStatus(status)
 
         targets = open(targetsDir, "r").read().split("\n")
         setTargets(targets, "TARGET")
         targets = open(avoidsDir, "r").read().split("\n")
         setTargets(targets, "AVOID")
+        for y, row in enumerate(self.matrix):
+            for x, tile in enumerate(row):
+                print(self.matrix[y][x])
+                continue
+
 
 
 class Tile:
-    def __init__(self, weight, status, score=0):
+    def __init__(self, x, y, weight, status, score=0, neighbors={}):
+        self.x = x
+        self.y = y
         self.weight = weight
         self.status = status
         self.score = score
+        self.neighbors = neighbors
+
+    def __str__(self):
+        return f"X: {self.x}, Y: {self.y}, weight: {self.weight}, status: {self.status}, score: {self.score}, "
 
     def setWeight(self, weight):
         self.weight = weight
@@ -50,4 +62,9 @@ class Tile:
 
     def setScore(self, score):
         self.score = score
+
+    def setNeighbors(self, neighbors):
+        pass
+
+
 
