@@ -24,7 +24,10 @@ class Board:
                 if x < 0 or x >= width or y < 0 or y >= height:
                     print(f"{tData} is out of range!")
                     continue
-                self.matrix[x][y].setWeight(weight)
+                if status == "TARGET":
+                    self.matrix[x][y].setScore(weight)
+                elif status == "AVOID":
+                    self.matrix[x][y].setWeight(weight)
                 self.matrix[int(tData[0])][int(tData[1])].setStatus(status)
 
         targets = open(targetsDir, "r").read().split("\n")
@@ -34,9 +37,10 @@ class Board:
 
 
 class Tile:
-    def __init__(self, weight, status):
+    def __init__(self, weight, status, score=0):
         self.weight = weight
         self.status = status
+        self.score = score
 
     def setWeight(self, weight):
         self.weight = weight
@@ -44,4 +48,6 @@ class Tile:
     def setStatus(self, status):
         self.status = status
 
+    def setScore(self, score):
+        self.score = score
 
