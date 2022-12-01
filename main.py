@@ -10,7 +10,7 @@ import time
 
 FILEDIR = "random"
 BOARDWIDTH, BOARDHEIGHT = 15, 15
-DEPTH = 5
+DEPTH = 4
 
 
 STARTDIR = FILEDIR + "/start.txt"
@@ -27,7 +27,7 @@ KILLDOZER = pygame.transform.scale(KILLDOZERIMG, (SCREENWIDTH / BOARDWIDTH, SCRE
 
 def main():
     if FILEDIR == "random":
-        makeRandomInput("random", 10, 40, 100, 50)
+        makeRandomInput("random", 15, 60, 1000, 50)
     clock = pygame.time.Clock()
     run = True
     board = makeBoard()
@@ -188,9 +188,9 @@ def makeRandomInput(name, targetCount, avoidCount, maxTarget, maxAvoid):
     targetPlaces = spots[0:targetCount]
     avoidPlaces = spots[targetCount:-1]
     start = spots[-1]
-    print(targetPlaces)
-    print(avoidPlaces)
-    print(start)
+    # print(targetPlaces)
+    # print(avoidPlaces)
+    # print(start)
     for t in targetPlaces:
         targets += f"{t[0]},{t[1]},{random.randint(0, maxTarget)}\n"
     for a in avoidPlaces:
