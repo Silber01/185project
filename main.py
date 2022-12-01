@@ -1,3 +1,6 @@
+import os
+import random
+
 import pygame
 from boardData import *
 from findPath import *
@@ -5,15 +8,14 @@ from findPathOrder import *
 import time
 
 
-FILEDIR = "input1"
-STARTDIR = FILEDIR + "/start.txt"
-TARGETSDIR = FILEDIR + "/targets.txt"
-AVOIDSDIR = FILEDIR + "/avoids.txt"
-
+FILEDIR = "random"
+BOARDWIDTH, BOARDHEIGHT = 15, 15
 DEPTH = 5
 
 
-BOARDWIDTH, BOARDHEIGHT = 15, 15
+STARTDIR = FILEDIR + "/start.txt"
+TARGETSDIR = FILEDIR + "/targets.txt"
+AVOIDSDIR = FILEDIR + "/avoids.txt"
 SCREENWIDTH, SCREENHEIGHT = 800, ((800 / BOARDWIDTH) * BOARDHEIGHT) + 100
 DEFAULTWEIGHT = 5
 pygame.init()
@@ -24,6 +26,8 @@ KILLDOZER = pygame.transform.scale(KILLDOZERIMG, (SCREENWIDTH / BOARDWIDTH, SCRE
 
 
 def main():
+    if FILEDIR == "random":
+        makeRandomInput("random", 10, 40, 100, 50)
     clock = pygame.time.Clock()
     run = True
     board = makeBoard()
@@ -42,6 +46,7 @@ def main():
     startPos = open(STARTDIR, "r").read().split(",")
     printKillDozer(int(startPos[0]), int(startPos[1]))
     graph = makeGraph(board, getTargets(board, TARGETSDIR, STARTDIR))
+
     # printPath(board, graph, (0,0), (8, 6))
     # printPath(board, graph, (8, 6), (0, 2))
     # for g in graph:
@@ -169,6 +174,38 @@ def drawScore(score):
     startText = font.render(f"Score: {score}", True, (0, 0, 0))
     startTextRect = startText.get_rect(center=(0, SCREENWIDTH + 50), left=30)
     WIN.blit(startText, startTextRect)
+
+def makeRandomInput(name, targetCount, avoidCount, maxTarget, maxAvoid):
+    if not os.path.exists(name):
+        os.mkdir(name)
+    places = []
+    for i in range(BOARDWIDTH):
+        for j in range(BOARDHEIGHT):
+            places.append((i, j))
+    spots = random.sample(places, targetCount + avoidCount + 1)
+    targets = ""
+    avoids = ""
+    targetPlaces = spots[0:targetCount]
+    avoidPlaces = spots[targetCount:-1]
+    start = spots[-1]
+    print(targetPlaces)
+    print(avoidPlaces)
+    print(start)
+    for t in targetPlaces:
+        targets += f"{t[0]},{t[1]},{random.randint(0, maxTarget)}\n"
+    for a in avoidPlaces:
+        avoids += f"{a[0]},{a[1]},{random.randint(10, maxAvoid)}\n"
+    start = f"{start[0]},{start[1]}"
+    with open(name + "/targets.txt", "w") as f:
+        f.write(targets[:-1])
+    with open(name + "/avoids.txt", "w") as f:
+        f.write(avoids[:-1])
+    with open(name + "/start.txt", "w") as f:
+        f.write(start)
+
+
+
+
 
 if __name__ == "__main__":
     main()
