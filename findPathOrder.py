@@ -2,8 +2,8 @@ import copy
 import math
 
 
-def findPathOrder(graph, start, depth):
-    unvisited = set()
+def findPathOrder(graph, start, depth):             # while it is possible to increase the score by reaching another
+    unvisited = set()                               # tile, find the next best tile to go to and set it as visited
     path = [start]
     for g in graph:
         if g == start:
@@ -20,10 +20,9 @@ def findPathOrder(graph, start, depth):
     return path
 
 
-def findBestScore(graph, start, unvisited, depth, inRecurse=False):
-
-    if depth == 0:
-        return (0, [start])
+def findBestScore(graph, start, unvisited, depth, inRecurse=False):     # find the best permutation of depth d where
+    if depth == 0:                                                      # the sum of path scores is highest and
+        return 0, [start]                                               # return the first node in the permutation
     path = [start]
     maxscore = 0
     bestStart = None
@@ -43,7 +42,7 @@ def findBestScore(graph, start, unvisited, depth, inRecurse=False):
 
     path.append(bestPath)
     if inRecurse:
-        return (maxscore, path)
+        return maxscore, path
     # print(path)
     return bestStart
 

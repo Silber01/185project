@@ -7,8 +7,8 @@ def findPaths(board, sourceX, sourceY):
     paths = []
     goals = {}
     checks = 0
-    for y in range(board.height):
-        row = []
+    for y in range(board.height):                               # converts matrix into graph with unknown distances from
+        row = []                                                # source (set to infinity)
         pathrow = []
         for x in range(board.width):
             row.append(math.inf)
@@ -19,9 +19,9 @@ def findPaths(board, sourceX, sourceY):
     paths[sourceY][sourceX] = [(sourceX, sourceY)]
     current = [(sourceX, sourceY)]
 
-    while len(current) > 0:
-        next = []
-        for tilePos in current:
+    while len(current) > 0:                                     # implements bfs pathfinding and saves tiles to
+        nextTiles = []                                          # traverse for best path from the given tile to each
+        for tilePos in current:                                 # other tile
             tile = board.matrix[tilePos[1]][tilePos[0]]
             for n in tile.neighbors:
                 neighbor = n[0]
@@ -29,13 +29,13 @@ def findPaths(board, sourceX, sourceY):
                 newWeight = matrix[tile.y][tile.x] + n[1]
                 checks += 1
                 if newWeight < currentWeight:
-                    next.append((neighbor.x, neighbor.y))
+                    nextTiles.append((neighbor.x, neighbor.y))
                     matrix[neighbor.y][neighbor.x] = newWeight
                     paths[neighbor.y][neighbor.x] = copy.deepcopy(paths[tile.y][tile.x])
                     paths[neighbor.y][neighbor.x].append([neighbor.x, neighbor.y])
                     if neighbor.status == "TARGET":
                         goals[(neighbor.x, neighbor.y)] = {"SCORE": neighbor.score - newWeight, "PATH": paths[neighbor.y][neighbor.x]}
-        current = next
+        current = nextTiles
     # print(goals)
     # print(f"STARTING AT {sourceX}, {sourceY}")
     # for g in goals:
@@ -45,15 +45,16 @@ def findPaths(board, sourceX, sourceY):
     # print(f"DONE IN {checks} CHECKS")
     return goals
 
-def makeGraph(board, targets):
-    graph = {}
+
+def makeGraph(board, targets):                                  # for all targets, find all paths from it to all other
+    graph = {}                                                  # tiles, essentially creating a more condensed graph
     for t in targets:
         goals = findPaths(board, t[0], t[1])
         graph[(t[0], t[1])] = goals
     return graph
 
 
-def getTargets(board, targetsDir, startDir):
+def getTargets(board, targetsDir, startDir):                # converts targets.txt into a set of coordinates
     targets = []
     targetList = open(targetsDir, "r").read().split("\n")
     start = open(startDir, "r").read().split("\n")
