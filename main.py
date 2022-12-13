@@ -1,6 +1,6 @@
 import os
 import random
-
+import json
 import pygame
 from boardData import *
 from findPath import *
@@ -8,9 +8,11 @@ from findPathOrder import *
 import time
 
 
-FILEDIR = "random"
-BOARDWIDTH, BOARDHEIGHT = 15, 15
-DEPTH = 4
+with open("setup.json", "r") as readFile:
+    setup = json.load(readFile)
+FILEDIR = setup["FILE"]
+BOARDWIDTH, BOARDHEIGHT = setup["WIDTH"], setup["HEIGHT"]
+DEPTH = setup["SEARCHDEPTH"]
 
 
 STARTDIR = FILEDIR + "/start.txt"
@@ -32,11 +34,11 @@ def main():
     run = True
     board = makeBoard()
 
-    WIN.fill((200,200,200))
+    WIN.fill((200, 200, 200))
     startBtn = pygame.Rect((SCREENWIDTH / 2) - 50, SCREENWIDTH + 25, 100, 50)
     pygame.draw.rect(WIN, (180, 180, 180), startBtn)
     font = pygame.font.Font(pygame.font.get_default_font(), 25)
-    startText = font.render("Start", True, (0,0,0))
+    startText = font.render("Start", True, (0, 0, 0))
     startTextRect = startText.get_rect(center=((SCREENWIDTH / 2), SCREENWIDTH + 50))
     WIN.blit(startText, startTextRect)
 
@@ -89,7 +91,7 @@ def printBoard(board):
     tileWidth = SCREENWIDTH / BOARDWIDTH
     background = pygame.Rect(0, 0, SCREENWIDTH, tileWidth * BOARDHEIGHT)
     pygame.draw.rect(WIN, (100, 100, 100), background)
-    borderWidth = tileWidth * 0.01
+    borderWidth = tileWidth * 0.02
     drawnWidth = tileWidth - 2 * borderWidth
     matrix = board.matrix
     for i, row in enumerate(matrix):
@@ -148,7 +150,7 @@ def reprint(tile):
 def printPath(board, graph, source, dest, score):
     kdx = 0
     kdy = 0
-    printBoard(board) # refreshes board
+    printBoard(board)  # refreshes board
     for tilePos in graph[source][dest]["PATH"]:
         tile = board.matrix[tilePos[1]][tilePos[0]]
         score -= tile.weight
@@ -167,6 +169,7 @@ def printPath(board, graph, source, dest, score):
     printKillDozer(kdx, kdy)
     return score
 
+
 def drawScore(score):
     scoreText = pygame.Rect(25, SCREENWIDTH + 25, 150, 50)
     pygame.draw.rect(WIN, (180, 180, 180), scoreText)
@@ -174,6 +177,7 @@ def drawScore(score):
     startText = font.render(f"Score: {score}", True, (0, 0, 0))
     startTextRect = startText.get_rect(center=(0, SCREENWIDTH + 50), left=30)
     WIN.blit(startText, startTextRect)
+
 
 def makeRandomInput(name, targetCount, avoidCount, maxTarget, maxAvoid):
     if not os.path.exists(name):
@@ -202,9 +206,6 @@ def makeRandomInput(name, targetCount, avoidCount, maxTarget, maxAvoid):
         f.write(avoids[:-1])
     with open(name + "/start.txt", "w") as f:
         f.write(start)
-
-
-
 
 
 if __name__ == "__main__":
